@@ -1,0 +1,29 @@
+# environment.yml  -  this is creating conda environment called dj-fm-app
+# To create environment based on this file
+#
+#     $ conda env create -f environment.yml
+#
+# To activate this environment, use
+#
+#     $ conda activate dj-fm-app
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+#
+# To verify packages installed
+#
+#     $ pip list
+#
+
+name: dj-fm-app
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+      - django
+      - djangorestframework
+      - transformers
+      - torch
+      - sentencepiece
+      - accelerate
