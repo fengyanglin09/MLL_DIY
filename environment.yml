@@ -21,9 +21,9 @@ dependencies:
   - python=3.11
   - pip
   - pip:
-      - django
-      - djangorestframework
+      - fastapi
+      - uvicorn
       - transformers
       - torch
-      - sentencepiece
-      - accelerate
+      - pydantic
+      - python-multipart
