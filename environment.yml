@@ -16,15 +16,17 @@
 #
 #     $ pip list
 #
+# To update your existing environment in place - without recreating it
+#
+#     $ conda env update --name dj-fm-app --file environment.yml --prune
+#
+
 
 name: dj-fm-app
 dependencies:
   - python=3.11
   - pip
   - pip:
-      - fastapi
-      - uvicorn
+      - fastapi[all]
       - transformers
       - torch
-      - pydantic
-      - python-multipart
