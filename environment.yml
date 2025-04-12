@@ -1,4 +1,5 @@
-# environment.yml  -  this is creating conda environment called dj-fm-app
+# environment.yml - conda environment setup
+# -  this is creating conda environment called dj-fm-app
 # To create environment based on this file
 #
 #     $ conda env create -f environment.yml
