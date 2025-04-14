@@ -30,3 +30,4 @@ dependencies:
       - fastapi[all]
       - transformers
       - torch
+      - sqlmodel
