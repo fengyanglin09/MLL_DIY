@@ -1,8 +1,8 @@
-# environment.yml - conda environment setup
+# package-manage.yml - conda environment setup
 # -  this is creating conda environment called dj-fm-app
 # To create environment based on this file
 #
-#     $ conda env create -f environment.yml
+#     $ conda env create -f package-manage.yml
 #
 # To activate this environment, use
 #
@@ -18,7 +18,7 @@
 #
 # To update your existing environment in place - without recreating it
 #
-#     $ conda env update --name dj-fm-app --file environment.yml --prune
+#     $ conda env update --name dj-fm-app --file package-manage.yml --prune
 #
 
 
@@ -31,3 +31,4 @@ dependencies:
       - transformers
       - torch
       - sqlmodel
+      - python-dotenv

@@ -2,11 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from routers import car_api, welcome_api
-from backend.db.init_db import init_db
-# import uvicorn
-
-
-
+from backend.db.database import init_db
 
 
 @asynccontextmanager

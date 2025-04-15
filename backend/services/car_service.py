@@ -1,12 +1,7 @@
 from fastapi import HTTPException
-from typing import Sequence, Type
-
 from sqlmodel import select, Session
 
-from backend.schemas import CarInput
-from backend.models import Car
-from typing import Type
-
+from backend.models.car import Car
 
 
 def get_all_cars(db: Session, size: str | None = None, doors: int | None = None) -> list:

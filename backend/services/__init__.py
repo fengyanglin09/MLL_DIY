@@ -1,1 +1,0 @@
-from backend.services.car_service import *

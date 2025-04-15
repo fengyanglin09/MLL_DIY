@@ -1,10 +1,10 @@
 
 
 from fastapi import APIRouter, Depends
-from backend.db.session import get_db
+from backend.db.database import get_db
 from sqlmodel import Session
 from backend.services import car_service
-from backend.models import Car
+from backend.models.car import Car
 
 router = APIRouter(prefix="/api")
 
