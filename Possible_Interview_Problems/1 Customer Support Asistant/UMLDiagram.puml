@@ -1,0 +1,83 @@
+@startuml
+!define RECTANGLE class
+
+RECTANGLE "User Interface" as UI {
+:Web/Mobile App;
+}
+
+RECTANGLE "API Gateway" as Gateway {
+:Request Routing;
+:Authentication;
+}
+
+RECTANGLE "Prompt Engineering Service" as PromptService {
+:Prompt Optimization;
+:Context Injection;
+}
+
+RECTANGLE "RAG Module" as RAG {
+:Vector Database;
+:Embedding Generation;
+:Context Retrieval;
+}
+
+RECTANGLE "Guardrails Layer" as Guardrails {
+:Tone Control;
+:Hallucination Detection;
+:Response Validation;
+}
+
+RECTANGLE "PII Redaction Service" as PII {
+:Sensitive Data Detection;
+:Data Masking;
+}
+
+RECTANGLE "Retrieval Service" as Retrieval {
+:FAQ Database;
+:Order History DB;
+:Search & Fetch;
+note right: Handles structured data queries\n(e.g., SQL-based order history, FAQs)
+}
+
+RECTANGLE "Escalation Service" as Escalation {
+:Confidence Scoring;
+:Human Handoff Logic;
+:Routing Rules;
+}
+
+RECTANGLE "LLM Core" as LLM {
+:Natural Language Processing;
+:Response Generation;
+}
+
+RECTANGLE "Human Support System" as Human {
+:Customer Support Agents;
+:Ticketing System;
+}
+
+RECTANGLE "Data Storage" as Storage {
+:User Data;
+:Logs;
+:Knowledge Base;
+:Vector DB;
+note right: Includes Vector DB for RAG\nand structured DBs for Retrieval
+}
+
+' Interactions
+UI --> Gateway : User Requests
+Gateway --> PromptService : Route Requests
+PromptService --> RAG : Fetch Context
+PromptService --> LLM : Send Optimized Prompt
+RAG --> Retrieval : Query FAQs/History
+RAG --> Storage : Access Vector DB
+LLM --> Guardrails : Validate Response
+Guardrails --> PII : Redact Sensitive Info
+Guardrails --> Escalation : Check for Handoff
+Escalation --> Human : Route to Agent
+LLM --> Gateway : Return Response
+Gateway --> UI : Deliver Response
+Retrieval --> Storage : Fetch Structured Data
+PII --> Storage : Log Redacted Data
+Escalation --> Storage : Log Escalations
+
+@enduml

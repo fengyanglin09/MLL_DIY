@@ -16,7 +16,7 @@ print(f"[CONFIG] ENV={ENV}, loading environment file: {env_file_path}")
 # Settings class using Pydantic
 class Settings(BaseSettings):
     ENV: str = "dev"
-    DATABASE_URL: str
+    DATABASE_URL: str = ""
     DEBUG: bool = False
 
     model_config = SettingsConfigDict(
@@ -25,8 +25,10 @@ class Settings(BaseSettings):
     )
 
 # Instantiate settings
-settings = Settings()
+
+def get_settings():
+    return Settings()
 
 # Debug print
-print(f"[CONFIG] DATABASE_URL: {settings.DATABASE_URL}")
-print(f"[CONFIG] DEBUG: {settings.DEBUG}")
+print(f"[CONFIG] DATABASE_URL: {get_settings().DATABASE_URL}")
+print(f"[CONFIG] DEBUG: {get_settings().DEBUG}")
