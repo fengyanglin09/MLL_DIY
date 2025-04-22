@@ -1,0 +1,21 @@
+@startuml
+title OAuth 2.0 Flow with Azure AD
+
+participant AngularFrontend as "Angular Frontend"
+participant FastAPIBackend as "FastAPI Backend"
+participant AzureAD as "Azure AD"
+
+AngularFrontend->>AzureAD: 1. Authorization Request (client_id, response_type=code, redirect_uri, scope)
+AzureAD->>AngularFrontend: 2. Redirect to Login Page
+
+AngularFrontend->>AzureAD: 3. User Authenticates
+AzureAD->>AngularFrontend: 4. Authorization Code Redirect
+
+AngularFrontend->>FastAPIBackend: 5. Send Authorization Code
+FastAPIBackend->>AzureAD: 6. Token Request (client_id, client_secret, code, redirect_uri)
+AzureAD->>FastAPIBackend: 7. Access Token Response
+
+FastAPIBackend->>FastAPIBackend: 8. Validate Access Token
+FastAPIBackend->>AngularFrontend: 9. Protected Resource Response
+
+@enduml

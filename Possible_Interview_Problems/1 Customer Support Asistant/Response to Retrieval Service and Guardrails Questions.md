@@ -1,4 +1,4 @@
-```markdown
+
 # Response to Retrieval Service and Guardrails Questions
 
 This response addresses two questions about the system architecture diagram for a conversational AI application, specifically clarifying the roles of the **Retrieval Service** and **Guardrails Layer**. The architecture supports requirements: **Prompt Engineering**, **Retrieval-Augmented Generation (RAG)**, **Guardrails for Tone and Hallucination**, **PII Redaction**, **Retrieval (e.g., FAQs, order history)**, and **Escalation Routing**. The answers leverage the context of prior discussions about the architecture diagram and technical details.
