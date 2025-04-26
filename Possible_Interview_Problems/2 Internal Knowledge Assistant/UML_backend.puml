@@ -1,0 +1,68 @@
+@startuml
+
+' Define the diagram style
+skinparam monochrome true
+skinparam defaultFontName Arial
+
+' Main FastAPI Backend component
+package "FastAPI Backend" {
+
+  ' RAG Pipeline Module
+  [RAG Pipeline Module] #..# [langchain]
+  [RAG Pipeline Module] #..# [google-cloud-aiplatform]
+  [RAG Pipeline Module] --> [Vertex AI\n(Foundational Model)] : Generates embeddings & answers
+  [RAG Pipeline Module] --> [Firestore\n(Vector DB)] : Queries vectors
+  [RAG Pipeline Module] --> [Pinecone\n(Optional Vector DB)] : Queries vectors (optional)
+
+  ' Authentication Module
+  [Authentication Module] #..# [firebase-admin]
+  [Authentication Module] --> [Firebase Authentication] : Verifies JWT tokens
+  [Authentication Module] --> [Firestore\n(RBAC)] : Fetches user roles
+
+  ' Indexing Module
+  [Indexing Module] #..# [requests]
+  [Indexing Module] #..# [atlassian-python-api]
+  [Indexing Module] #..# [slack_sdk]
+  [Indexing Module] #..# [google-api-python-client]
+  [Indexing Module] #..# [PyPDF2]
+  [Indexing Module] #..# [Google Cloud Document AI]
+  [Indexing Module] --> [Confluence API] : Fetches pages
+  [Indexing Module] --> [Google Drive API] : Fetches files
+  [Indexing Module] --> [Slack API] : Fetches messages
+  [Indexing Module] --> [Secret Manager] : Retrieves API credentials
+  [Indexing Module] --> [Vertex AI\n(Foundational Model)] : Generates embeddings
+  [Indexing Module] --> [Firestore\n(Vector DB)] : Stores embeddings
+  [Indexing Module] --> [Pinecone\n(Optional Vector DB)] : Stores embeddings (optional)
+  [Indexing Module] --> [Cloud Storage] : Stores raw files
+
+  ' Temporal Relevance Module
+  [Temporal Relevance Module] #..# [Custom Scoring Logic]
+  [Temporal Relevance Module] --> [Firestore\n(Metadata)] : Fetches last_modified
+  [Temporal Relevance Module] --> [RAG Pipeline Module] : Applies recency boost
+
+  ' Relationships between modules
+  [RAG Pipeline Module] --> [Authentication Module] : Verifies user & permissions
+  [Indexing Module] --> [Cloud Scheduler] : Triggers indexing
+}
+
+' External services
+[Confluence API] #..# [External Service]
+[Google Drive API] #..# [External Service]
+[Slack API] #..# [External Service]
+[Firebase Authentication] #..# [GCP Service]
+[Firestore\n(Vector DB)] #..# [GCP Service]
+[Firestore\n(RBAC)] #..# [GCP Service]
+[Firestore\n(Metadata)] #..# [GCP Service]
+[Pinecone\n(Optional Vector DB)] #..# [GCP Service]
+[Vertex AI\n(Foundational Model)] #..# [GCP Service]
+[Cloud Storage] #..# [GCP Service]
+[Secret Manager] #..# [GCP Service]
+[Cloud Scheduler] #..# [GCP Service]
+
+' Notes to clarify roles
+note right of [RAG Pipeline Module]: Handles semantic search\nand natural language answers\nusing the Foundational Model
+note right of [Authentication Module]: Verifies user identity\nand enforces RBAC
+note right of [Indexing Module]: Fetches, processes, and\nindexes documents from\nmultiple sources
+note right of [Temporal Relevance Module]: Boosts recent documents\nin search results
+
+@enduml

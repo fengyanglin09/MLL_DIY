@@ -1,0 +1,46 @@
+@startuml
+skinparam monochrome true
+
+' External Systems
+actor "Healthcare Provider" as Provider
+actor "Payer System" as Payer
+entity "EHR System" as EHR
+
+' System Components
+package "Prior Authorization System" {
+  [API Gateway] #--> [Request Ingestion Layer]
+  [Request Ingestion Layer] --> [Data Parsing Module]
+  [Data Parsing Module] --> [Criteria Matching Engine]
+  [Criteria Matching Engine] --> [Decision Logic Module]
+  [Decision Logic Module] --> [Reviewer Interface]
+  [Reviewer Interface] --> [Feedback Loop]
+  [Feedback Loop] --> [Criteria Matching Engine]
+
+  [Criteria Matching Engine] --> [Rules Database]
+  [Decision Logic Module] --> [Audit Trail]
+  [Analytics Engine] --> [Dashboard]
+  [Audit Trail] --> [Analytics Engine]
+}
+
+' External Integrations
+Provider --> [API Gateway]
+EHR --> [API Gateway] : FHIR API
+Payer --> [API Gateway] : Secure API
+[API Gateway] --> Payer : Decisions
+[API Gateway] --> EHR : Decisions
+
+' Human-in-the-Loop
+actor "Human Reviewer" as Reviewer
+Reviewer --> [Reviewer Interface]
+
+' Data Flow
+[Data Parsing Module] --> [Audit Trail] : Log Extracted Data
+[Criteria Matching Engine] --> [Audit Trail] : Log Matching Results
+[Decision Logic Module] --> [Audit Trail] : Log Decisions
+[Feedback Loop] --> [Audit Trail] : Log Feedback
+
+' Analytics Flow
+[Analytics Engine] --> [Audit Trail] : Fetch Logs
+[Dashboard] --> Admin
+
+@enduml

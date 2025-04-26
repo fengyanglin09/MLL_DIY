@@ -1,0 +1,59 @@
+@startuml
+
+' Explicitly define as a component diagram
+skinparam monochrome true
+skinparam defaultFontName Arial
+
+' Define entities
+actor Users
+
+' Define main components
+[Angular Frontend\n(Web App)] as Frontend
+[FastAPI Backend] as Backend
+
+' Define external integrations
+[Confluence API] as Confluence
+[Google Drive API] as GoogleDrive
+[Slack API] as Slack
+
+' Define GCP subcomponents
+[Cloud Run\n(FastAPI)] as CloudRun
+[Firebase\n(Authentication & RBAC)] as Firebase
+[Firestore\n(Vector DB/Metadata)] as Firestore
+[Pinecone\n(Optional Vector DB)] as Pinecone
+[Vertex AI\n(Foundational Model)] as VertexAI
+[Cloud Storage\n(Document Storage)] as CloudStorage
+[Cloud Scheduler\n(Indexing)] as CloudScheduler
+[Secret Manager\n(Credentials)] as SecretManager
+
+' Define relationships
+Users --> Frontend : Interacts
+Frontend --> Backend : HTTP/REST (JSON)
+Backend --> Confluence : Fetches content
+Backend --> GoogleDrive : Fetches content
+Backend --> Slack : Fetches content
+Backend --> Firebase : Authenticates
+Backend --> Firestore : Stores/Queries
+Backend --> Pinecone : Stores/Queries (Optional)
+Backend --> VertexAI : Embeds & LLM
+Backend --> CloudStorage : Stores raw files
+Backend --> SecretManager : Retrieves credentials
+CloudScheduler --> Backend : Triggers indexing
+
+' Group GCP components using package notation
+package "GCP Infrastructure" {
+  [CloudRun]
+  [Firebase]
+  [Firestore]
+  [Pinecone]
+  [VertexAI]
+  [CloudStorage]
+  [CloudScheduler]
+  [SecretManager]
+}
+
+' Add notes with simplified syntax to avoid activity diagram misinterpretation
+note right of Backend: Handles RAG pipeline, Authentication, Document indexing, Temporal relevance
+note left of Frontend: Provides Search UI, Authentication, Result display
+
+@enduml
