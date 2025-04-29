@@ -32,3 +32,7 @@ dependencies:
       - torch
       - sqlmodel
       - python-dotenv
+      - ruff   # for linting, also need to install ruff plugins
+      - black  # for formatting
+      - isort  # for sorting imports
+      - pytest  # for testing

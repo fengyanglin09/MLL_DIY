@@ -1,10 +1,12 @@
 from fastapi import HTTPException
-from sqlmodel import select, Session
+from sqlmodel import Session, select
 
 from backend.models.car import Car
 
 
-def get_all_cars(db: Session, size: str | None = None, doors: int | None = None) -> list:
+def get_all_cars(
+    db: Session, size: str | None = None, doors: int | None = None
+) -> list:
     query = select(Car)
     if size:
         query = query.where(Car.size == size)
@@ -19,7 +21,6 @@ def get_car_by_id(db: Session, id: int) -> Car:
         return car
     else:
         raise HTTPException(status_code=404, detail=f"Car not found {id}")
-
 
 
 def add_car(db: Session, car: Car) -> Car:
@@ -49,4 +50,4 @@ def delete_car(db: Session, id: int) -> None:
         db.delete(car)
         db.commit()
     else:
-        raise HTTPException(status_code=404, detail=f"No car found")
+        raise HTTPException(status_code=404, detail="No car found")

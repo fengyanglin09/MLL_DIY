@@ -1,8 +1,10 @@
-from typing import TYPE_CHECKING, ClassVar
-from sqlmodel import SQLModel, Field, Relationship
+from typing import TYPE_CHECKING
+
+from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
     from .trip import Trip
+
 
 class Car(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
