@@ -13,6 +13,11 @@ def find_post(post_id: int):
     return post_table.get(post_id)
 
 
+@router.get("/", status_code=200)
+async def read_root():
+    return {"message": "Welcome to the Store API!"}
+
+
 @router.post("/post", response_model=UserPost, status_code=201)
 async def create_post(post: UserPostIn):
     data = post.model_dump()

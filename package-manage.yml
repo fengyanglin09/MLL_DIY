@@ -36,3 +36,8 @@ dependencies:
       - black  # for formatting
       - isort  # for sorting imports
       - pytest  # for testing
+      - httpx  # for testing
+      - sqlalchemy # for database
+      - databases[aiosqlite]  # for async database access - to SQLite
+      - databases[asyncpg]  # for async database access - to PostgreSQL
+      - python-dotenv  # for environment variables
