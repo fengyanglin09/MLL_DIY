@@ -37,7 +37,8 @@ dependencies:
       - isort  # for sorting imports
       - pytest  # for testing
       - httpx  # for testing
-      - sqlalchemy # for database
+      - sqlalchemy[asyncio] # for database
       - databases[aiosqlite]  # for async database access - to SQLite
       - databases[asyncpg]  # for async database access - to PostgreSQL
       - python-dotenv  # for environment variables
+      - asgi-lifespan  # for managing ASGI app lifecycle
