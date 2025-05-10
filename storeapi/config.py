@@ -18,11 +18,15 @@ class BaseConfig(BaseSettings):
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
     DB_FORCE_ROLL_BACK: Optional[bool] = False
+    LOG_LEVEL: Optional[str] = "INFO"
+    LOG_FILE: Optional[str] = "app.log"
 
 
 class DevConfig(GlobalConfig):
+    LOG_LEVEL: Optional[str] = "DEBUG"
     class Config:
         env_prefix = "DEV_"
+
 
 
 class ProdConfig(GlobalConfig):

@@ -42,3 +42,4 @@ dependencies:
       - databases[asyncpg]  # for async database access - to PostgreSQL
       - python-dotenv  # for environment variables
       - asgi-lifespan  # for managing ASGI app lifecycle
+      - rich  # for pretty printing`
