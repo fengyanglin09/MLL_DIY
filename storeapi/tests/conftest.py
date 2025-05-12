@@ -1,6 +1,7 @@
 # storeapi/tests/conftest.py
 
 import os
+
 import pytest
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
@@ -8,8 +9,8 @@ from httpx import ASGITransport, AsyncClient
 # Set environment for test BEFORE any app import
 os.environ["ENV_STATE"] = "test"
 
-from storeapi.main import app
 from storeapi.database import database
+from storeapi.main import app
 
 
 @pytest.fixture(scope="session")

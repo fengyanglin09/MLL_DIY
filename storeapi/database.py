@@ -1,7 +1,7 @@
 import databases
 import sqlalchemy
-from storeapi.config import get_config
 
+from storeapi.config import get_config
 
 metadata = sqlalchemy.MetaData()
 

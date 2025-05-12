@@ -43,3 +43,5 @@ dependencies:
       - python-dotenv  # for environment variables
       - asgi-lifespan  # for managing ASGI app lifecycle
       - rich  # for pretty printing`
+      - asgi-correlation-id  # for correlation ID middleware
+      - python-json-logger  # for logging
