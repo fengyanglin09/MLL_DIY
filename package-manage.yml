@@ -16,6 +16,10 @@
 #
 #     $ pip list
 #
+# To delete packages installed
+#
+#     $ pip uninstall <package-name>
+#
 # To update your existing environment in place - without recreating it
 #
 #     $ conda env update --name dj-fm-app --file package-manage.yml --prune
@@ -26,17 +30,13 @@ name: dj-fm-app
 dependencies:
   - python=3.11
   - pip
+  - # Production-only dependencies
   - pip:
       - fastapi[all]
       - transformers
       - torch
       - sqlmodel
       - python-dotenv
-      - ruff   # for linting, also need to install ruff plugins
-      - black  # for formatting
-      - isort  # for sorting imports
-      - pytest  # for testing
-      - httpx  # for testing
       - sqlalchemy[asyncio] # for database
       - databases[aiosqlite]  # for async database access - to SQLite
       - databases[asyncpg]  # for async database access - to PostgreSQL
@@ -45,3 +45,6 @@ dependencies:
       - rich  # for pretty printing`
       - asgi-correlation-id  # for correlation ID middleware
       - python-json-logger  # for logging
+      - python-jose  # for JWT token handling
+      - python-multipart  # for handling multipart/form-data
+      - passlib[bcrypt] # for password hashing

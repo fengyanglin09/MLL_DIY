@@ -1,4 +1,4 @@
-# storeapi/config.py
+# storeapi/app_conf.py
 
 from functools import lru_cache
 from typing import Optional
@@ -21,6 +21,7 @@ class GlobalConfig(BaseConfig):
     DB_FORCE_ROLL_BACK: Optional[bool] = False
     LOG_LEVEL: Optional[str] = "INFO"
     LOG_FILE: Optional[str] = "app.log"
+    DEV_LOGTAIL_API_KEY: Optional[str] = None
 
 
 class DevConfig(GlobalConfig):

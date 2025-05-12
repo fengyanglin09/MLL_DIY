@@ -2,7 +2,12 @@ import logging
 import os
 from logging.config import dictConfig
 
-from storeapi.config import get_config
+from storeapi.app_conf import get_config, DevConfig
+
+logging_handler = ["console_handler", "rotating_file_handler"]
+
+if isinstance(get_config(), DevConfig):
+    logging_handler = ["console_handler", "rotating_file_handler"]
 
 
 
@@ -28,11 +33,12 @@ class EmailObfuscationFilter(logging.Filter):
 
 
 def configure_logging() -> None:
-    # config = get_config()
-    # print(config.dict())
+    current_dir = os.path.dirname(__file__)
 
-    # Ensure the logs directory exists
-    os.makedirs("logs", exist_ok=True)
+    # Ensure the logs directory exists relative to the current file
+    logs_dir = os.path.join(current_dir, "../logs")
+    os.makedirs(logs_dir, exist_ok=True)
+
 
     dictConfig(
         {
@@ -59,48 +65,49 @@ def configure_logging() -> None:
                 },
             },
             "handlers": {
-                "console": {
+                "console_handler": {
                     "class": "rich.logging.RichHandler",
                     "formatter": "default",
                     "level": get_config().LOG_LEVEL,
                     "filters": ["correlation_id", "email_obfuscation"],
                 },
-                "file_handler": {
-                    "class": "logging.FileHandler",
-                    "filename": get_config().LOG_FILE,
-                    "formatter": "file",
-                    "level": get_config().LOG_LEVEL,
-                    "filters": ["correlation_id", "email_obfuscation"],
-                },
+
+                # "file_handler": {
+                #     "class": "logging.FileHandler",
+                #     "filename": get_config().LOG_FILE,
+                #     "formatter": "file",
+                #     "level": get_config().LOG_LEVEL,
+                #     "filters": ["correlation_id", "email_obfuscation"],
+                # },
                 "rotating_file_handler": {
                     "class": "logging.handlers.RotatingFileHandler",
-                    "filename": "logs/" + get_config().LOG_FILE,
+                    "filename": os.path.join(logs_dir, get_config().LOG_FILE),
                     "maxBytes": 1024 * 1024 * 5,  # 5 MB
                     "backupCount": 5,
                     "formatter": "file",
                     "encoding": "utf-8",
                     "level": get_config().LOG_LEVEL,
                     "filters": ["correlation_id", "email_obfuscation"],
-                },
+                }
             },
             "loggers": {
                 "uvicorn": {
-                    "handlers": ["console", "rotating_file_handler"],
+                    "handlers": logging_handler,
                     "level": "INFO",
                     "propagate": False,
                 },
                 "storeapi": {
-                    "handlers": ["console", "rotating_file_handler"],
+                    "handlers": logging_handler,
                     "level": get_config().LOG_LEVEL,
                     "propagate": False,
                 },
                 "databases": {
-                    "handlers": ["console"],
+                    "handlers": logging_handler,
                     "level": "WARNING",
                     "propagate": False,
                 },
                 "aiosqlite": {
-                    "handlers": ["console"],
+                    "handlers": logging_handler,
                     "level": "WARNING",
                     "propagate": False,
                 },

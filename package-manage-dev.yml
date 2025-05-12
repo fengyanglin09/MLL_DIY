@@ -1,0 +1,40 @@
+# package-manage.yml - conda environment setup
+# -  this is creating conda environment called dj-fm-app
+# To create environment based on this file
+#
+#     $ conda env create -f package-manage.yml
+#
+# To activate this environment, use
+#
+#     $ conda activate dj-fm-app
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+#
+# To verify packages installed
+#
+#     $ pip list
+#
+# To delete packages installed
+#
+#     $ pip uninstall <package-name>
+#
+# To update your existing environment in place - without recreating it
+#
+#     $ conda env update --name dj-fm-app --file package-manage-dev.yml --prune
+#
+
+
+name: dj-fm-app
+dependencies:
+  - python=3.11
+  - pip
+  # Development-only dependencies
+  - pip:
+      - ruff   # for linting
+      - black  # for formatting
+      - isort  # for sorting imports
+      - pytest  # for testing
+      - httpx  # for testing
+      - pytest-mock  # for mocking

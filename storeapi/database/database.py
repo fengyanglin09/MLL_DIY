@@ -1,7 +1,7 @@
 import databases
 import sqlalchemy
 
-from storeapi.config import get_config
+from storeapi.app_conf import get_config
 
 metadata = sqlalchemy.MetaData()
 
@@ -21,6 +21,16 @@ comment_table = sqlalchemy.Table(
     sqlalchemy.Column(
         "post_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("posts.id"), nullable=False
     ),
+)
+
+
+user_table = sqlalchemy.Table(
+    "users",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("username", sqlalchemy.String, unique=True),
+    sqlalchemy.Column("email", sqlalchemy.String, unique=True),
+    sqlalchemy.Column("password", sqlalchemy.String)
 )
 
 
