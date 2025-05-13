@@ -26,9 +26,9 @@ class GlobalConfig(BaseConfig):
 
 class DevConfig(GlobalConfig):
     LOG_LEVEL: Optional[str] = "DEBUG"
+
     class Config:
         env_prefix = "DEV_"
-
 
 
 class ProdConfig(GlobalConfig):

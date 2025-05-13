@@ -30,7 +30,7 @@ user_table = sqlalchemy.Table(
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("username", sqlalchemy.String, unique=True),
     sqlalchemy.Column("email", sqlalchemy.String, unique=True),
-    sqlalchemy.Column("password", sqlalchemy.String)
+    sqlalchemy.Column("password", sqlalchemy.String),
 )
 
 
@@ -43,6 +43,4 @@ engine = sqlalchemy.create_engine(
 
 metadata.create_all(engine)
 
-database = databases.Database(
-    get_config().DATABASE_URL
-)
+database = databases.Database(get_config().DATABASE_URL)

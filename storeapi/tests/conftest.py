@@ -2,29 +2,30 @@
 
 import os
 
+os.environ["ENV_STATE"] = "test"
+
 import pytest
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 
-# Set environment for test BEFORE any app import
-os.environ["ENV_STATE"] = "test"
-
 from storeapi.database.database import database
 from storeapi.main import app
 
+from storeapi.tests.user_fixtures import registered_user # noqa: F401
 
-@pytest.fixture(scope="session")
+
+@pytest.fixture(scope="function")
 def anyio_backend():
     return "asyncio"
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def client():
     with TestClient(app) as c:
         yield c
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 async def async_client(client) -> AsyncClient:
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url=client.base_url) as ac:

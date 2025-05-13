@@ -6,12 +6,13 @@ from asgi_correlation_id import CorrelationIdMiddleware
 from fastapi import FastAPI, HTTPException
 
 from storeapi.app_conf import get_config
-from storeapi.database.database import database
 from storeapi.configs.logging_conf import configure_logging
+from storeapi.database.database import database
 from storeapi.routers.post import router as post_router
 from storeapi.routers.user import router as user_router
 
 logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,7 +34,7 @@ This correlation ID will then be available for logging and other purposes throug
 
 app.add_middleware(
     CorrelationIdMiddleware,
-    header_name="X-Correlation-ID"  # Set your custom header name here
+    header_name="X-Correlation-ID",  # Set your custom header name here
 )
 
 app.include_router(post_router)
@@ -45,10 +46,10 @@ async def http_exception_handler(request, exc):
     logger.error(f"HTTP Exception: {exc.status_code} {exc.detail}")
     return await request.app.default_exception_handler(request, exc)
 
+
 if __name__ == "__main__":
     import uvicorn
+
     config = get_config()
     print("Running with config:", config.ENV_STATE)
     uvicorn.run("storeapi.main:app", host="127.0.0.1", port=8000, reload=True)
-
-

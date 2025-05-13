@@ -49,12 +49,10 @@ async def create_comment(comment: CommentIn):
     return {**data, "id": last_record_id}
 
 
-
 @router.get("/post/{post_id}/comment", response_model=list[Comment])
 async def get_comments_on_post(post_id: int):
     query = comment_table.select().where(comment_table.c.post_id == post_id)
     return await database.fetch_all(query)
-
 
 
 @router.get("/post/{post_id}", response_model=UserPostWithComments)

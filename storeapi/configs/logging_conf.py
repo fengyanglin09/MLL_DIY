@@ -2,13 +2,12 @@ import logging
 import os
 from logging.config import dictConfig
 
-from storeapi.app_conf import get_config, DevConfig
+from storeapi.app_conf import DevConfig, get_config
 
 logging_handler = ["console_handler", "rotating_file_handler"]
 
 if isinstance(get_config(), DevConfig):
     logging_handler = ["console_handler", "rotating_file_handler"]
-
 
 
 def obfuscated(email: str, length: int = 3) -> str:
@@ -20,6 +19,7 @@ def obfuscated(email: str, length: int = 3) -> str:
         obfuscated_local_part = "*" * length + local_part[length:]
         return f"{obfuscated_local_part}@{domain}"
     return email
+
 
 class EmailObfuscationFilter(logging.Filter):
     def __init__(self, name: str = "", length: int = 3):
@@ -39,7 +39,6 @@ def configure_logging() -> None:
     logs_dir = os.path.join(current_dir, "../logs")
     os.makedirs(logs_dir, exist_ok=True)
 
-
     dictConfig(
         {
             "version": 1,
@@ -47,12 +46,9 @@ def configure_logging() -> None:
             "filters": {
                 "correlation_id": {
                     "()": "asgi_correlation_id.CorrelationIdFilter",
-                    "uuid_length": 32
+                    "uuid_length": 32,
                 },
-                "email_obfuscation": {
-                    "()": EmailObfuscationFilter,
-                    "length": 3
-                },
+                "email_obfuscation": {"()": EmailObfuscationFilter, "length": 3},
             },
             "formatters": {
                 "default": {
@@ -71,7 +67,6 @@ def configure_logging() -> None:
                     "level": get_config().LOG_LEVEL,
                     "filters": ["correlation_id", "email_obfuscation"],
                 },
-
                 # "file_handler": {
                 #     "class": "logging.FileHandler",
                 #     "filename": get_config().LOG_FILE,
@@ -88,7 +83,7 @@ def configure_logging() -> None:
                     "encoding": "utf-8",
                     "level": get_config().LOG_LEVEL,
                     "filters": ["correlation_id", "email_obfuscation"],
-                }
+                },
             },
             "loggers": {
                 "uvicorn": {

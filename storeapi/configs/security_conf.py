@@ -4,6 +4,7 @@ from storeapi.database.database import database, user_table
 
 logger = logging.getLogger(__name__)
 
+
 async def get_user(email: str):
     logger.debug("Fetching user with email: %s", email, extra={"email": email})
 

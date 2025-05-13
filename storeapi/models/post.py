@@ -8,9 +8,7 @@ class UserPostIn(BaseModel):
 class UserPost(UserPostIn):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = {"from_attributes": True}
 
 
 class CommentIn(BaseModel):
@@ -21,9 +19,7 @@ class CommentIn(BaseModel):
 class Comment(CommentIn):
     id: int
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = {"from_attributes": True}
 
 
 class UserPostWithComments(UserPost):
