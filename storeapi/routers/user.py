@@ -1,6 +1,10 @@
 import logging
 
-from fastapi import APIRouter, HTTPException, status
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+
 from starlette.responses import JSONResponse
 
 from storeapi.configs.jwt_conf import create_access_token
@@ -43,12 +47,12 @@ async def register(user: UserIn):
 
 
 @router.post("/token")
-async def login(user: UserIn):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Login a user and return a token.
     """
     # Here you would typically verify the password and return a token
-    db_user = await authenticate_user(user.email, user.password)
+    db_user = await authenticate_user(form_data.username, form_data.password)
     access_token = create_access_token(db_user.email)
     return {
         "access_token": access_token,
