@@ -1,7 +1,9 @@
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
+from storeapi.configs.jwt_conf import oauth2_scheme
+from storeapi.configs.security_conf import get_current_user
 from storeapi.database.database import comment_table, database, post_table
 from storeapi.models.post import (Comment, CommentIn, UserPost, UserPostIn,
                                   UserPostWithComments)
@@ -23,7 +25,12 @@ async def read_root():
 
 
 @router.post("/post", response_model=UserPost, status_code=201)
-async def create_post(post: UserPostIn):
+async def create_post(post: UserPostIn, request: Request):
+
+    logger.info("Creating post with body: %s", post.body)
+
+    current_user = await get_current_user(await oauth2_scheme(request))
+
     data = post.model_dump()
     query = post_table.insert().values(**data)
     last_record_id = await database.execute(query)
@@ -38,7 +45,11 @@ async def get_all_posts():
 
 
 @router.post("/comment", response_model=Comment)
-async def create_comment(comment: CommentIn):
+async def create_comment(comment: CommentIn, request: Request):
+
+    logger.info("Creating comment with body: %s", comment.body)
+    current_user = await get_current_user(await oauth2_scheme(request))
+
     post = await find_post(comment.post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")

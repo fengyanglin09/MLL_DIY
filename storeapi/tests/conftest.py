@@ -42,3 +42,9 @@ async def db_transaction():
         yield
 
     # All changes in test rolled back automatically
+
+@pytest.fixture(scope="function")
+async def logged_in_token(async_client: AsyncClient, registered_user: dict) -> str:  # noqa: F811
+    response = await async_client.post(
+        "/token", json=registered_user)
+    return response.json()["access_token"]

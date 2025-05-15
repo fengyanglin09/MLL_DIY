@@ -1,9 +1,14 @@
 # storeapi/app_conf.py
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 
 from pydantic_settings import BaseSettings
+
+
+BASE_DIR = Path(__file__).resolve().parent / "tests"  # e.g. "storeapi"
+TEST_DB_PATH = BASE_DIR / "test.db"
 
 
 class BaseConfig(BaseSettings):
@@ -37,7 +42,7 @@ class ProdConfig(GlobalConfig):
 
 
 class TestConfig(GlobalConfig):
-    DATABASE_URL: str = "sqlite:///./test.db"
+    DATABASE_URL: str = f"sqlite:///{TEST_DB_PATH}"
     DB_FORCE_ROLL_BACK: bool = True
 
     class Config:
