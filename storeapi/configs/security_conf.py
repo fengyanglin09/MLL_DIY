@@ -1,12 +1,19 @@
 import logging
 
-from fastapi import HTTPException, status
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, status
 from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
 
 from storeapi.database.database import database, user_table
 
-from storeapi.configs.jwt_conf import credentials_exception, SECRET_KEY, ALGORITHM
+from storeapi.configs.jwt_conf import (
+    credentials_exception,
+    SECRET_KEY,
+    ALGORITHM,
+    oauth2_scheme,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +50,7 @@ async def authenticate_user(email: str, password: str):
     return user
 
 
-async def get_current_user(token: str):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     logger.debug("Getting current user from token: %s", token)
 
     try:
