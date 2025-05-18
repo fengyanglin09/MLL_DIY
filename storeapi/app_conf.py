@@ -6,7 +6,6 @@ from typing import Optional
 
 from pydantic_settings import BaseSettings
 
-
 BASE_DIR = Path(__file__).resolve().parent / "tests"  # e.g. "storeapi"
 TEST_DB_PATH = BASE_DIR / "test.db"
 

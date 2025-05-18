@@ -1,12 +1,14 @@
-from fastapi import HTTPException
-
 import pytest
+from fastapi import HTTPException
 from jose import jwt
 
-from storeapi.configs.security_conf import get_user, get_password_hash, verify_password, authenticate_user, \
-    get_current_user
-
-from storeapi.configs.jwt_conf import access_token_expires, SECRET_KEY, ALGORITHM, create_access_token
+from storeapi.configs.jwt_conf import (ALGORITHM, SECRET_KEY,
+                                       access_token_expires,
+                                       create_access_token)
+from storeapi.configs.security_conf import (authenticate_user,
+                                            get_current_user,
+                                            get_password_hash, get_user,
+                                            verify_password)
 
 
 def test_password_hash():

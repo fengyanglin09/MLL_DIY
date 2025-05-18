@@ -1,10 +1,9 @@
 import datetime
 import logging
 from datetime import timedelta
+
 from fastapi import HTTPException, status
-
 from fastapi.security import OAuth2PasswordBearer
-
 from jose import jwt
 
 """

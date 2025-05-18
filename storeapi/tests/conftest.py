@@ -10,8 +10,7 @@ from httpx import ASGITransport, AsyncClient
 
 from storeapi.database.database import database
 from storeapi.main import app
-
-from storeapi.tests.user_fixtures import registered_user # noqa: F401
+from storeapi.tests.user_fixtures import registered_user  # noqa: F401
 
 
 @pytest.fixture(scope="function")

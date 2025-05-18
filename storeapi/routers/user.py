@@ -1,18 +1,15 @@
 import logging
-
 from typing import Annotated
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-
 from starlette.responses import JSONResponse
 
 from storeapi.configs.jwt_conf import create_access_token
-from storeapi.configs.security_conf import get_user, authenticate_user
+from storeapi.configs.security_conf import (authenticate_user,
+                                            get_password_hash, get_user)
 from storeapi.database.database import database, user_table
 from storeapi.models.user import UserIn
-
-from storeapi.configs.security_conf import get_password_hash, get_user
 
 router = APIRouter()
 

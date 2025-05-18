@@ -27,6 +27,18 @@ comment_table = sqlalchemy.Table(
     ),
 )
 
+like_table = sqlalchemy.Table(
+    "likes",
+    metadata,
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column(
+        "post_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("posts.id"), nullable=False
+    ),
+    sqlalchemy.Column(
+        "user_id", sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"), nullable=False
+    ),
+)
+
 
 user_table = sqlalchemy.Table(
     "users",
@@ -36,6 +48,10 @@ user_table = sqlalchemy.Table(
     sqlalchemy.Column("email", sqlalchemy.String, unique=True),
     sqlalchemy.Column("password", sqlalchemy.String),
 )
+
+
+
+
 
 
 engine = sqlalchemy.create_engine(

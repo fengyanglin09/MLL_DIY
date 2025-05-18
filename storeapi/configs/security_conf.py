@@ -1,19 +1,13 @@
 import logging
-
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, status
-from jose import jwt, ExpiredSignatureError, JWTError
+from jose import ExpiredSignatureError, JWTError, jwt
 from passlib.context import CryptContext
 
+from storeapi.configs.jwt_conf import (ALGORITHM, SECRET_KEY,
+                                       credentials_exception, oauth2_scheme)
 from storeapi.database.database import database, user_table
-
-from storeapi.configs.jwt_conf import (
-    credentials_exception,
-    SECRET_KEY,
-    ALGORITHM,
-    oauth2_scheme,
-)
 
 logger = logging.getLogger(__name__)
 
