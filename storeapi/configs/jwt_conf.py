@@ -16,8 +16,6 @@ SECRET_KEY = "your_secret_key"
 
 ALGORITHM = "HS256"
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 credentials_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -27,8 +25,10 @@ credentials_exception = HTTPException(
 
 
 def access_token_expires() -> int:
-    return ACCESS_TOKEN_EXPIRE_MINUTES
+    return 30
 
+def confirm_token_expires() -> int:
+    return 1440 # 24 hours
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,19 @@ def create_access_token(email: str):
     jwt_data = {
         "sub": email,
         "exp": expire,
+        "type": "access",
     }
     encoded_jwt = jwt.encode(jwt_data, key=SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def create_confirmation_token(email: str):
+    logger.debug("Creating confirmation token for email: %s", email, extra={"email": email})
+    expire = datetime.datetime.now(datetime.UTC) + timedelta(minutes=confirm_token_expires())
+    jwt_data = {
+        "sub": email,
+        "exp": expire,
+        "type": "confirmation",
+    }
+    encoded_jwt = jwt.encode(jwt_data, key=SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt

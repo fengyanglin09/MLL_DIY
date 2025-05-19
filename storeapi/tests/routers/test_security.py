@@ -2,9 +2,14 @@ import pytest
 from fastapi import HTTPException
 from jose import jwt
 
-from storeapi.configs.jwt_conf import (ALGORITHM, SECRET_KEY,
-                                       access_token_expires,
-                                       create_access_token)
+from storeapi.configs.jwt_conf import (
+    ALGORITHM,
+    SECRET_KEY,
+    access_token_expires,
+    create_access_token,
+    confirm_token_expires,
+    create_confirmation_token,
+)
 from storeapi.configs.security_conf import (authenticate_user,
                                             get_current_user,
                                             get_password_hash, get_user,
@@ -34,13 +39,38 @@ def test_access_token_expire_minutes():
     assert access_token_expires() == 30
 
 
+def test_confirm_token_expire_minutes():
+    assert confirm_token_expires() == 1440
+
+
 def test_create_access_token():
 
     token = create_access_token("123")
 
-    assert {"sub": "123"}.items() <= jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM]).items()
+    assert {"sub": "123", "type": "access"}.items() <= jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM]).items()
 
 
+def test_create_confirmation_token():
+
+    token = create_confirmation_token("123")
+
+    assert {"sub": "123", "type": "confirmation"}.items() <= jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM]).items()
+
+
+
+@pytest.mark.parametrize(
+    "func,email,expected_type",
+    [
+        (create_access_token, "123", "access"),
+        (create_access_token, "user@example.com", "access"),
+        (create_confirmation_token, "123", "confirmation"),
+        (create_confirmation_token, "user@example.com", "confirmation"),
+    ],
+)
+def test_token_creation(func: callable, email: str, expected_type: str):
+    token = func(email)
+    decoded = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
+    assert {"sub": email, "type": expected_type}.items() <= decoded.items()
 
 @pytest.mark.anyio
 async def test_authenticate_user(registered_user: dict):
@@ -74,3 +104,11 @@ async def test_get_current_user(registered_user: dict):
 async def test_get_current_user_invalid_token():
     with pytest.raises(HTTPException):
         await get_current_user("invalidtoken")
+
+
+
+@pytest.mark.anyio
+async def test_get_current_user_wrong_type_token(registered_user: dict):
+    token = create_confirmation_token(registered_user["email"])
+    with pytest.raises(HTTPException):
+        await get_current_user(token)
