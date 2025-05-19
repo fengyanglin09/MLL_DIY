@@ -1,4 +1,5 @@
 import pytest
+import pytest_mock
 from fastapi import HTTPException
 from jose import jwt
 
@@ -10,10 +11,14 @@ from storeapi.configs.jwt_conf import (
     confirm_token_expires,
     create_confirmation_token,
 )
-from storeapi.configs.security_conf import (authenticate_user,
-                                            get_current_user,
-                                            get_password_hash, get_user,
-                                            verify_password)
+from storeapi.configs.security_conf import (
+    authenticate_user,
+    get_current_user,
+    get_password_hash,
+    get_user,
+    verify_password,
+    get_subject_for_token_type,
+)
 
 
 def test_password_hash():
@@ -112,3 +117,71 @@ async def test_get_current_user_wrong_type_token(registered_user: dict):
     token = create_confirmation_token(registered_user["email"])
     with pytest.raises(HTTPException):
         await get_current_user(token)
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_valid_confirmation():
+    email = "test@example.com"
+    token = create_confirmation_token(email)
+    subject = await get_subject_for_token_type(token, "confirmation")
+    assert subject == email
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_valid_access():
+    email = "test@example.com"
+    token = create_access_token(email)
+    subject = await get_subject_for_token_type(token, "access")
+    assert subject == email
+
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_expired(mocker: pytest_mock.MockerFixture):
+    mocker.patch("storeapi.configs.jwt_conf.access_token_expires", return_value=-1)
+    email = "test@example.com"
+    token = create_access_token(email)
+    with pytest.raises(HTTPException) as exc_info:
+        await get_subject_for_token_type(token, "access")
+
+    assert "Token has expired"  in str(exc_info.value.detail)
+
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_invalid_token():
+    token = "invalid token"
+    with pytest.raises(HTTPException) as exc_info:
+        await get_subject_for_token_type(token, "access")
+
+    assert "Invalid token" in str(exc_info.value.detail)
+
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_missing_sub():
+    email = "test@example.com"
+    token = create_access_token(email)
+    payload = jwt.decode(
+        token,
+        key=SECRET_KEY,
+        algorithms=[ALGORITHM]
+    )
+
+    del payload["sub"]
+
+    token = jwt.encode(
+        payload,
+        key=SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    with pytest.raises(HTTPException) as exc_info:
+        await get_subject_for_token_type(token, "access")
+    assert "Token is missing 'sub' field" in str(exc_info.value.detail)
+
+
+@pytest.mark.anyio
+async def test_get_subject_for_token_type_wrong_type():
+    email = "test@example.com"
+    token = create_confirmation_token(email)
+
+    with pytest.raises(HTTPException) as exc_info:
+        await get_subject_for_token_type(token, "access")
+
+    assert "Token is not of type 'access'" in str(exc_info.value.detail)

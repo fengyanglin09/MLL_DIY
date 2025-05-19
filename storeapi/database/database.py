@@ -1,5 +1,6 @@
 import databases
 import sqlalchemy
+from sympy import false
 
 from storeapi.app_conf import get_config
 
@@ -47,12 +48,16 @@ user_table = sqlalchemy.Table(
     sqlalchemy.Column("username", sqlalchemy.String, unique=True),
     sqlalchemy.Column("email", sqlalchemy.String, unique=True),
     sqlalchemy.Column("password", sqlalchemy.String),
+    sqlalchemy.Column("confirmed", sqlalchemy.Boolean, default=false),
 )
 
 
 
 
 
+# print(f"haha--{get_config().DATABASE_URL}" )
+#
+# print("ENV_STATE:", get_config().ENV_STATE)
 
 engine = sqlalchemy.create_engine(
     get_config().DATABASE_URL,
@@ -62,5 +67,7 @@ engine = sqlalchemy.create_engine(
 )
 
 metadata.create_all(engine)
+
+
 
 database = databases.Database(get_config().DATABASE_URL)

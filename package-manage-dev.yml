@@ -38,3 +38,4 @@ dependencies:
       - pytest  # for testing
       - httpx  # for testing
       - pytest-mock  # for mocking
+      - alembic  # for database migrations

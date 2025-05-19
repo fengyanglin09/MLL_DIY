@@ -1,8 +1,10 @@
 # storeapi/tests/conftest.py
 
-import os
 
-os.environ["ENV_STATE"] = "test"
+# import os
+#
+# os.environ["ENV_STATE"] = "test"
+
 
 import pytest
 from fastapi.testclient import TestClient

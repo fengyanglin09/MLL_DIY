@@ -1,13 +1,17 @@
 import logging
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import JSONResponse
 
-from storeapi.configs.jwt_conf import create_access_token
-from storeapi.configs.security_conf import (authenticate_user,
-                                            get_password_hash, get_user)
+from storeapi.configs.jwt_conf import create_access_token, create_confirmation_token
+from storeapi.configs.security_conf import (
+    authenticate_user,
+    get_password_hash,
+    get_user,
+    get_subject_for_token_type,
+)
 from storeapi.database.database import database, user_table
 from storeapi.models.user import UserIn
 
@@ -17,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 @router.post("/register", status_code=201)
-async def register(user: UserIn):
+async def register(user: UserIn, request: Request):
     """
     Register a new user.
     """
@@ -40,7 +44,12 @@ async def register(user: UserIn):
     logger.debug(query)
 
     await database.execute(query)
-    return {"message": "User registered successfully"}
+    return {"detail": "User created, Please confirm your email",
+            "confirmation_url": request.url_for(
+                "confirm_email",
+                token=create_confirmation_token(user.email),
+            )
+            }
 
 
 @router.post("/token")
@@ -55,3 +64,25 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "access_token": access_token,
         "token_type": "bearer",
     }
+
+
+@router.get("/confirm/{token}")
+async def confirm_email(token: str):
+    """
+    Confirm a user's email address.
+    """
+    email = get_subject_for_token_type(token, "confirmation")
+
+    query = (
+        user_table.update()
+        .where(user_table.c.email == email)
+        .values(confirmed=True)
+    )
+
+    logger.debug(query)
+
+    await database.execute(query)
+
+    return {"detail": "User confirmed successfully"}
+
+
