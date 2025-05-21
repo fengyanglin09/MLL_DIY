@@ -2,8 +2,8 @@
 
 
 # import os
-#
-# os.environ["ENV_STATE"] = "test"
+# os.environ.setdefault("ENV_STATE", "test")
+# os.environ.setdefault("DATABASE_URL", "sqlite:///./test.db")
 
 
 import pytest

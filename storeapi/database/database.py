@@ -55,9 +55,9 @@ user_table = sqlalchemy.Table(
 
 
 
-# print(f"haha--{get_config().DATABASE_URL}" )
-#
-# print("ENV_STATE:", get_config().ENV_STATE)
+print(f"haha--{get_config().DATABASE_URL}" )
+
+print("ENV_STATE:--", get_config().ENV_STATE)
 
 engine = sqlalchemy.create_engine(
     get_config().DATABASE_URL,
