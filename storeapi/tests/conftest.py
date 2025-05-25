@@ -12,7 +12,7 @@ from httpx import ASGITransport, AsyncClient
 
 from storeapi.database.database import database
 from storeapi.main import app
-from storeapi.tests.user_fixtures import registered_user  # noqa: F401
+from storeapi.tests.user_fixtures import registered_user, confirmed_user  # noqa: F401
 
 
 @pytest.fixture(scope="function")
@@ -45,10 +45,10 @@ async def db_transaction():
     # All changes in test rolled back automatically
 
 @pytest.fixture(scope="function")
-async def logged_in_token(async_client: AsyncClient, registered_user: dict) -> str:  # noqa: F811
+async def logged_in_token(async_client: AsyncClient, confirmed_user: dict) -> str:  # noqa: F811
     response = await async_client.post(
         "/token",
-        data={"username": registered_user["email"], "password": registered_user["password"]}
+        data={"username": confirmed_user["email"], "password": confirmed_user["password"]}
 
     )
     return response.json()["access_token"]

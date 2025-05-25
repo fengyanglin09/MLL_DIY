@@ -12,6 +12,7 @@ from storeapi.configs.jwt_conf import (
     create_credentials_exception,
 )
 from storeapi.database.database import database, user_table
+from storeapi.models.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +26,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 
-async def get_user(email: str):
+async def get_user(email: str) -> User | None:
     logger.debug("Fetching user with email: %s", email, extra={"email": email})
 
     query = user_table.select().where(user_table.c.email == email)
@@ -45,6 +46,8 @@ async def authenticate_user(email: str, password: str):
         raise create_credentials_exception("Invalid email or password")
     if not verify_password(password, user["password"]):
         raise create_credentials_exception("Invalid email or password")
+    if not user.confirmed:
+        raise create_credentials_exception("User is not confirmed")
     return user
 
 

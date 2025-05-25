@@ -78,31 +78,31 @@ def test_token_creation(func: callable, email: str, expected_type: str):
     assert {"sub": email, "type": expected_type}.items() <= decoded.items()
 
 @pytest.mark.anyio
-async def test_authenticate_user(registered_user: dict):
+async def test_authenticate_user(confirmed_user: dict):
 
-    user = await authenticate_user(registered_user["email"], registered_user["password"])
+    user = await authenticate_user(confirmed_user["email"], confirmed_user["password"])
 
-    assert user.email == registered_user["email"]
-    assert verify_password(registered_user["password"], user.password)
+    assert user.email == confirmed_user["email"]
+    assert verify_password(confirmed_user["password"], user.password)
 
 
 @pytest.mark.anyio
-async def test_authenticate_user_not_found(registered_user: dict):
+async def test_authenticate_user_not_found(confirmed_user: dict):
     with pytest.raises(HTTPException):
         await authenticate_user("nonexist@example.net", "1234")
 
 
 @pytest.mark.anyio
-async def test_authenticate_user_wrong_password(registered_user: dict):
+async def test_authenticate_user_wrong_password(confirmed_user: dict):
     with pytest.raises(HTTPException):
-        await authenticate_user(registered_user["email"], "wrongpassword")
+        await authenticate_user(confirmed_user["email"], "wrongpassword")
 
 
 @pytest.mark.anyio
-async def test_get_current_user(registered_user: dict):
-    token = create_access_token(registered_user["email"])
+async def test_get_current_user(confirmed_user: dict):
+    token = create_access_token(confirmed_user["email"])
     user = await get_current_user(token)
-    assert user.email == registered_user["email"]
+    assert user.email == confirmed_user["email"]
 
 
 @pytest.mark.anyio
@@ -113,8 +113,8 @@ async def test_get_current_user_invalid_token():
 
 
 @pytest.mark.anyio
-async def test_get_current_user_wrong_type_token(registered_user: dict):
-    token = create_confirmation_token(registered_user["email"])
+async def test_get_current_user_wrong_type_token(confirmed_user: dict):
+    token = create_confirmation_token(confirmed_user["email"])
     with pytest.raises(HTTPException):
         await get_current_user(token)
 

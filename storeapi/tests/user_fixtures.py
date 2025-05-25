@@ -12,3 +12,15 @@ async def registered_user(async_client: AsyncClient) -> dict:
     user = await database.fetch_one(query)
     user_detail["id"] = user.id
     return user_detail
+
+
+@pytest.fixture(scope="function")
+async def confirmed_user(registered_user: dict) -> dict:
+
+    updateQuery =(
+        user_table.update().where(user_table.c.email == registered_user["email"])
+        .values(confirmed=True)
+    )
+    await database.execute(updateQuery)
+    registered_user["confirmed"] = True
+    return registered_user

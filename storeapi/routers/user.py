@@ -71,7 +71,7 @@ async def confirm_email(token: str):
     """
     Confirm a user's email address.
     """
-    email = get_subject_for_token_type(token, "confirmation")
+    email = await get_subject_for_token_type(token, "confirmation")
 
     query = (
         user_table.update()

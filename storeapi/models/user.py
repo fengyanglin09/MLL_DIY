@@ -5,6 +5,7 @@ class User(BaseModel):
     id: int | None = None
     username: str
     email: str
+    confirmed: bool = False
 
 
 class UserIn(User):
